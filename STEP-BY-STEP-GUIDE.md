@@ -33,11 +33,11 @@ What each variable does:
 - JWT_SECRET: A secret string used to sign and verify JWT tokens (make it long and random)
 
 **AI Tooling**
-I used Claude as my primary AI assistant throughout this project rather than Claude Code with a ``CLAUDE.md`` file.
+I used Claude as my primary AI assistant throughout this project. I chose not to use Claude Code as I felt the project scope was manageable through the web interface — I described what I was building, Claude generated the code, and I copied it into VS Code.
 
-My workflow was conversational: I described what I was building and Claude generated the full project structure — models, routes, middleware, and entry point — which I copied into VS Code. For anything I didn't understand (like the streak logic or the compound unique index on HabitLog), I asked Claude to explain it and it walked me through the reasoning.
+I created a `CLAUDE.md` file in the project root documenting the tech stack, file structure, and API routes in case I needed to switch to Claude Code later, but did not end up using it.
 
-For future reference: if using Claude Code in the terminal, you would create a ``CLAUDE.md`` file in the project root describing the tech stack, file structure, and any conventions. Since I used the web interface instead, no ``CLAUDE.md`` was needed.
+For anything I didn't understand (like the streak calculation logic or the compound unique index on HabitLog), I asked Claude to explain it and it walked me through the reasoning.
 
 **Set Up MongoDB Atlas**
 1. Go to mongodb.com/atlas and create a free account
