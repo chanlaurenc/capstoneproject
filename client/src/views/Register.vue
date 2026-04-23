@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="auth-page">
     <h1>Create Your Account</h1>
     <p>Start tracking habits and building consistency</p>
 

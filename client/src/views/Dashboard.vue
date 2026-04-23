@@ -9,30 +9,31 @@
     </nav>
 
     <div class="content">
-      <div class="header">
+    <div class="dashboard-header">
         <div>
-          <h1>Welcome back, {{ user?.username }}!</h1>
-          <p>Here are your habits for today</p>
+        <h1>Welcome back, {{ user?.username }}!</h1>
+        <p>Here are your habits for today</p>
         </div>
-        <button @click="showModal = true">+ Add Habit</button>
-      </div>
+        <button class="add-btn" @click="showModal = true">+ Add Habit</button>
+    </div>
 
-      <p v-if="loading">Loading...</p>
-      <p v-else-if="habits.length === 0">No habits yet — add one to get started!</p>
+    <p v-if="loading">Loading...</p>
+    <p v-else-if="habits.length === 0">No habits yet — add one to get started!</p>
 
-      <div v-for="habit in habits" :key="habit._id" class="habit-card">
+    <div v-for="habit in habits" :key="habit._id" class="habit-card">
         <div>
-          <h3>{{ habit.name }}</h3>
-          <p>Category: {{ habit.category }}</p>
-          <p>🔥 Streak: {{ habit.currentStreak }} days</p>
+        <h3>{{ habit.name }}</h3>
+        <p>Category: {{ habit.category }}</p>
+        <p>🔥 Streak: {{ habit.currentStreak }} days</p>
         </div>
         <button
-          @click="markComplete(habit._id)"
-          :disabled="habit.completedToday"
+        class="complete-btn"
+        @click="markComplete(habit._id)"
+        :disabled="habit.completedToday"
         >
-          {{ habit.completedToday ? 'Completed ✓' : 'Mark Complete' }}
+        {{ habit.completedToday ? 'Completed ✓' : 'Mark Complete' }}
         </button>
-      </div>
+    </div>
     </div>
 
     <CreateHabit v-if="showModal" @close="showModal = false" @created="fetchDashboard" />

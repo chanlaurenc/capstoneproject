@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="auth-page">
     <h1>Habit Streak Tracker</h1>
     <p>Track your habits and stay consistent</p>
 
