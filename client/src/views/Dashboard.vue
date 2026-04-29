@@ -25,10 +25,19 @@
     </div>
 
     <div v-if="completionMessage" class="toast">{{ completionMessage }}</div>
-    <div v-for="habit in habits" :key="habit._id" class="habit-card">
+    <div 
+      v-for="habit in habits" 
+      :key="habit._id" 
+      class="habit-card"
+      :style="{ borderLeft: `4px solid ${categoryColor(habit.category)}` }"
+    >
       <div>
         <h3>{{ habit.name }}</h3>
-        <p>Category: {{ habit.category }}</p>
+        <p>
+          <span class="category-badge" :style="{ background: categoryColor(habit.category) + '20', color: categoryColor(habit.category) }">
+            {{ habit.category }}
+          </span>
+        </p>
         <p>🔥 Streak: {{ habit.currentStreak }} days</p>
         <p>✅ Today: {{ habit.todayCount }}/{{ habit.goal }}</p>
       </div>
@@ -117,6 +126,16 @@ export default {
         } catch (err) {
           console.error(err)
         }
+      },
+      categoryColor(category) {
+        const colors = {
+          Health: '#22c55e',
+          Fitness: '#3b82f6',
+          Personal: '#a855f7',
+          Work: '#f59e0b',
+          Other: '#6b7280'
+        }
+        return colors[category] || '#6b7280'
       }
   }
 }
