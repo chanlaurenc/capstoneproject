@@ -86,48 +86,39 @@ router.delete('/:id', async (req, res) => {
 router.post('/:id/log', async (req, res) => {
   try {
     const habit = await Habit.findOne({ _id: req.params.id, userId: req.userId });
+    if (!habit) return res.status(404).json({ message: 'Habit not found' });
 
-    if (!habit) {
-      return res.status(404).json({ message: 'Habit not found' });
-    }
-
-    // Normalize today's date to midnight UTC
     const today = new Date();
     today.setUTCHours(0, 0, 0, 0);
 
-    // Check for duplicate log today
-    const existingLog = await HabitLog.findOne({ habitId: habit._id, date: today });
-    if (existingLog) {
-      return res.status(409).json({ message: 'Habit already logged for today' });
+    // Count how many times logged today
+    const todayCount = await HabitLog.countDocuments({ habitId: habit._id, date: today });
+
+    if (todayCount >= habit.goal) {
+      return res.status(409).json({ message: 'Goal already reached for today' });
     }
 
-    // Create log entry
+    // Create log entry (allow multiple per day now)
     await HabitLog.create({ userId: req.userId, habitId: habit._id, date: today });
 
-    // Update streak logic
-    const yesterday = new Date(today);
-    yesterday.setUTCDate(yesterday.getUTCDate() - 1);
+    // If this log completes the goal, update streak
+    if (todayCount + 1 === habit.goal) {
+      const yesterday = new Date(today);
+      yesterday.setUTCDate(yesterday.getUTCDate() - 1);
 
-    const lastDate = habit.lastCompletedDate
-      ? new Date(habit.lastCompletedDate)
-      : null;
+      const lastDate = habit.lastCompletedDate ? new Date(habit.lastCompletedDate) : null;
+      if (lastDate) lastDate.setUTCHours(0, 0, 0, 0);
 
-    if (lastDate) {
-      lastDate.setUTCHours(0, 0, 0, 0);
+      if (lastDate && lastDate.getTime() === yesterday.getTime()) {
+        habit.currentStreak += 1;
+      } else {
+        habit.currentStreak = 1;
+      }
+      habit.lastCompletedDate = today;
+      await habit.save();
     }
 
-    if (lastDate && lastDate.getTime() === yesterday.getTime()) {
-      // Continuing streak
-      habit.currentStreak += 1;
-    } else if (!lastDate || lastDate.getTime() < yesterday.getTime()) {
-      // Streak broken or first log
-      habit.currentStreak = 1;
-    }
-
-    habit.lastCompletedDate = today;
-    await habit.save();
-
-    res.json({ message: 'Habit logged successfully', habit });
+    res.json({ message: 'Logged successfully', todayCount: todayCount + 1, goal: habit.goal });
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
   }

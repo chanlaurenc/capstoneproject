@@ -24,11 +24,13 @@
       <p>Click <strong>+ Add Habit</strong> to get started!</p>
     </div>
 
+    <div v-if="completionMessage" class="toast">{{ completionMessage }}</div>
     <div v-for="habit in habits" :key="habit._id" class="habit-card">
       <div>
         <h3>{{ habit.name }}</h3>
         <p>Category: {{ habit.category }}</p>
         <p>🔥 Streak: {{ habit.currentStreak }} days</p>
+        <p>✅ Today: {{ habit.todayCount }}/{{ habit.goal }}</p>
       </div>
       <div class="habit-actions">
         <button
@@ -36,7 +38,7 @@
           @click="markComplete(habit._id)"
           :disabled="habit.completedToday"
         >
-          {{ habit.completedToday ? 'Completed ✓' : 'Mark Complete' }}
+          {{ habit.completedToday ? '🎉 Crushed it!' : `Log it 🔥` }}
         </button>
         <button class="delete-btn" @click="deleteHabit(habit._id)">Delete</button>
       </div>
@@ -59,7 +61,8 @@ export default {
     return {
       habits: [],
       loading: true,
-      showModal: false
+      showModal: false,
+      completionMessage: ''
     }
   },
   computed: {
@@ -87,9 +90,13 @@ export default {
     async markComplete(habitId) {
       try {
         const token = useAuthStore().token
-        await axios.post(`http://localhost:3000/api/habits/${habitId}/log`, {}, {
+        const res = await axios.post(`http://localhost:3000/api/habits/${habitId}/log`, {}, {
           headers: { Authorization: `Bearer ${token}` }
         })
+        if (res.data.todayCount === res.data.goal) {
+          this.completionMessage = '🎉 Streak updated! You crushed your goal today!'
+          setTimeout(() => { this.completionMessage = '' }, 3000)
+        }
         await this.fetchDashboard()
       } catch (err) {
         console.error(err)

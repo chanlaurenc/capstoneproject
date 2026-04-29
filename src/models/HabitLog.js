@@ -21,7 +21,6 @@ const habitLogSchema = new mongoose.Schema({
   },
 });
 
-// Prevent duplicate logs for the same habit on the same day
-habitLogSchema.index({ habitId: 1, date: 1 }, { unique: true });
+habitLogSchema.index({ habitId: 1, date: 1 });
 
 module.exports = mongoose.model('HabitLog', habitLogSchema);
