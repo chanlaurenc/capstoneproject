@@ -21,18 +21,21 @@
     <p v-else-if="habits.length === 0">No habits yet — add one to get started!</p>
 
     <div v-for="habit in habits" :key="habit._id" class="habit-card">
-        <div>
+      <div>
         <h3>{{ habit.name }}</h3>
         <p>Category: {{ habit.category }}</p>
         <p>🔥 Streak: {{ habit.currentStreak }} days</p>
-        </div>
+      </div>
+      <div class="habit-actions">
         <button
-        class="complete-btn"
-        @click="markComplete(habit._id)"
-        :disabled="habit.completedToday"
+          class="complete-btn"
+          @click="markComplete(habit._id)"
+          :disabled="habit.completedToday"
         >
-        {{ habit.completedToday ? 'Completed ✓' : 'Mark Complete' }}
+          {{ habit.completedToday ? 'Completed ✓' : 'Mark Complete' }}
         </button>
+        <button class="delete-btn" @click="deleteHabit(habit._id)">Delete</button>
+      </div>
     </div>
     </div>
 
@@ -91,7 +94,19 @@ export default {
     handleLogout() {
       useAuthStore().logout()
       this.$router.push('/login')
-    }
+    },
+      async deleteHabit(habitId) {
+        if (!confirm('Are you sure you want to delete this habit?')) return
+        try {
+          const token = useAuthStore().token
+          await axios.delete(`http://localhost:3000/api/habits/${habitId}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          })
+          await this.fetchDashboard()
+        } catch (err) {
+          console.error(err)
+        }
+      }
   }
 }
 </script>
