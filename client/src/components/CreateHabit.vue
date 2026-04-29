@@ -22,7 +22,7 @@
         </select>
       </div>
       <div class="field">
-        <label>Goal</label>
+        <label>Goal (times per day)</label>
         <input v-model="goal" type="number" placeholder="How many times per day?" />
       </div>
 
