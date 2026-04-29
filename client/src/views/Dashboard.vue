@@ -17,6 +17,23 @@
         <button class="add-btn" @click="showModal = true">+ Add Habit</button>
     </div>
 
+    <div class="stats-bar">
+      <div class="stat">
+        <span class="stat-number">{{ habits.length }}</span>
+        <span class="stat-label">Habits</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-number">{{ completedTodayCount }}/{{ habits.length }}</span>
+        <span class="stat-label">Completed Today</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-number">🔥 {{ bestStreak }}</span>
+        <span class="stat-label">Best Streak</span>
+      </div>
+    </div>
+
     <p v-if="loading">Loading...</p>
     <div v-else-if="habits.length === 0" class="empty-state">
       <p>🌱</p>
@@ -77,6 +94,13 @@ export default {
   computed: {
     user() {
       return useAuthStore().user
+    },
+    bestStreak() {
+      if (this.habits.length === 0) return 0
+      return Math.max(...this.habits.map(h => h.currentStreak))
+    },
+    completedTodayCount() {
+      return this.habits.filter(h => h.completedToday).length
     }
   },
   mounted() {
