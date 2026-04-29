@@ -59,7 +59,7 @@ export default {
       }
       try {
         const token = useAuthStore().token
-        await axios.post('http://localhost:3000/api/habits', {
+        await axios.post(`${import.meta.env.VITE_API_URL}/api/habits`, {
           name: this.name,
           category: this.category || 'Other',
           goal: this.goal

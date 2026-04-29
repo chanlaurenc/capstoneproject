@@ -11,7 +11,11 @@ const leaderboardRoutes = require('./routes/leaderboard');
 const app = express();
 
 app.use(cors({
-  origin: 'http://localhost:5173'
+  origin: [
+    'http://localhost:5173',
+    'https://chanlaurenc.github.io'
+  ],
+  credentials: true
 }));
 app.use(express.json());
 
