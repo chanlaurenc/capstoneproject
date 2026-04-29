@@ -235,6 +235,24 @@ nav button {
   color: white;
 }
 
+.empty-state {
+  text-align: center;
+  padding: 60px 24px;
+  color: #6b7280;
+}
+
+.empty-state p:first-child {
+  font-size: 3rem;
+  margin-bottom: 12px;
+}
+
+.empty-state h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+}
+
 /* LEADERBOARD */
 .leaderboard-table {
   background: white;

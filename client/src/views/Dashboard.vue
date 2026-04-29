@@ -18,7 +18,11 @@
     </div>
 
     <p v-if="loading">Loading...</p>
-    <p v-else-if="habits.length === 0">No habits yet — add one to get started!</p>
+    <div v-else-if="habits.length === 0" class="empty-state">
+      <p>🌱</p>
+      <h3>No habits yet</h3>
+      <p>Click <strong>+ Add Habit</strong> to get started!</p>
+    </div>
 
     <div v-for="habit in habits" :key="habit._id" class="habit-card">
       <div>
