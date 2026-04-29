@@ -66,12 +66,45 @@
         >
           {{ habit.completedToday ? '🎉 Crushed it!' : `Log it 🔥` }}
         </button>
-        <button class="delete-btn" @click="deleteHabit(habit._id)">Delete</button>
+        <div class="secondary-actions">
+          <button class="edit-btn" @click="editingHabit = { ...habit }">✏️ Edit</button>
+          <button class="delete-btn" @click="deleteHabit(habit._id)">Delete</button>
+        </div>
       </div>
     </div>
     </div>
 
     <CreateHabit v-if="showModal" @close="showModal = false" @created="fetchDashboard" />
+    <div v-if="editingHabit" class="modal-overlay">
+      <div class="modal">
+        <div class="modal-header">
+          <h2>Edit Habit</h2>
+          <button @click="editingHabit = null">X</button>
+        </div>
+        <div class="field">
+          <label>Habit Name</label>
+          <input v-model="editingHabit.name" type="text" />
+        </div>
+        <div class="field">
+          <label>Category</label>
+          <select v-model="editingHabit.category">
+            <option>Health</option>
+            <option>Personal</option>
+            <option>Work</option>
+            <option>Fitness</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Goal (times per day)</label>
+          <input v-model="editingHabit.goal" type="number" />
+        </div>
+        <div class="modal-buttons">
+          <button @click="editingHabit = null">Cancel</button>
+          <button @click="saveEdit">Save</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -88,7 +121,8 @@ export default {
       habits: [],
       loading: true,
       showModal: false,
-      completionMessage: ''
+      completionMessage: '',
+      editingHabit: null
     }
   },
   computed: {
@@ -160,6 +194,22 @@ export default {
           Other: '#6b7280'
         }
         return colors[category] || '#6b7280'
+      },
+      async saveEdit() {
+        try {
+          const token = useAuthStore().token
+          await axios.put(`http://localhost:3000/api/habits/${this.editingHabit._id}`, {
+            name: this.editingHabit.name,
+            category: this.editingHabit.category,
+            goal: this.editingHabit.goal
+          }, {
+            headers: { Authorization: `Bearer ${token}` }
+          })
+          this.editingHabit = null
+          await this.fetchDashboard()
+        } catch (err) {
+          console.error(err)
+        }
       }
   }
 }

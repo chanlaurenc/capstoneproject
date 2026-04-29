@@ -313,6 +313,27 @@ nav button {
   background: #e5e7eb;
 }
 
+.secondary-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.edit-btn {
+  padding: 6px 16px;
+  background: white;
+  color: #4a7cf6;
+  border: 1px solid #4a7cf6;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.edit-btn:hover {
+  background: #4a7cf6;
+  color: white;
+}
+
 /* LEADERBOARD */
 .leaderboard-table {
   background: white;
