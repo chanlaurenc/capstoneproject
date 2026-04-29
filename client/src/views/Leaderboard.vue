@@ -51,7 +51,7 @@ export default {
     async fetchLeaderboard() {
       try {
         const token = useAuthStore().token
-        const res = await axios.get('http://localhost:3000/api/leaderboard', {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/leaderboard`, {
           headers: { Authorization: `Bearer ${token}` }
         })
         this.leaderboard = res.data

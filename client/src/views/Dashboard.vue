@@ -144,7 +144,7 @@ export default {
     async fetchDashboard() {
       try {
         const token = useAuthStore().token
-        const res = await axios.get('http://localhost:3000/api/dashboard', {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/dashboard`, {
           headers: { Authorization: `Bearer ${token}` }
         })
         this.habits = res.data.habits
@@ -157,7 +157,7 @@ export default {
     async markComplete(habitId) {
       try {
         const token = useAuthStore().token
-        const res = await axios.post(`http://localhost:3000/api/habits/${habitId}/log`, {}, {
+        const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/habits/${habitId}/log`, {}, {
           headers: { Authorization: `Bearer ${token}` }
         })
         if (res.data.todayCount === res.data.goal) {
@@ -177,7 +177,7 @@ export default {
         if (!confirm('Are you sure you want to delete this habit?')) return
         try {
           const token = useAuthStore().token
-          await axios.delete(`http://localhost:3000/api/habits/${habitId}`, {
+          await axios.delete(`${import.meta.env.VITE_API_URL}/api/habits/${habitId}`, {
             headers: { Authorization: `Bearer ${token}` }
           })
           await this.fetchDashboard()
@@ -198,7 +198,7 @@ export default {
       async saveEdit() {
         try {
           const token = useAuthStore().token
-          await axios.put(`http://localhost:3000/api/habits/${this.editingHabit._id}`, {
+          await axios.put(`${import.meta.env.VITE_API_URL}/api/habits/${this.editingHabit._id}`, {
             name: this.editingHabit.name,
             category: this.editingHabit.category,
             goal: this.editingHabit.goal
