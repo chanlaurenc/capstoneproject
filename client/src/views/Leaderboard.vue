@@ -9,8 +9,10 @@
     </nav>
 
     <div class="content">
-      <h1>Leaderboard</h1>
-      <p>See where you rank among all users</p>
+      <div class="leaderboard-header">
+        <h1>Leaderboard</h1>
+        <p>See where you rank among all users</p>
+      </div>
 
       <p v-if="loading">Loading...</p>
 
