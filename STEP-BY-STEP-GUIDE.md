@@ -140,5 +140,93 @@ Open Thunder Client in VS Code. Test each route in this order:
     - Expected: 200 OK with "Habit deleted successfully"
 
 ## Front-end Setup
+**Prerequisites**
+- Back-end server running on port 3000
+- Node.js v18 or higher (note: Vite 5 was used instead of the latest Vite due to Node v20.17.0 compatibility)
+- npm v9 or higher
+
+**1. Scaffold or clone the Vite project**
+
+If cloning the existing repo, the `client/` folder is already scaffolded. Just install dependencies:
+
+```bash
+cd client
+npm install
+```
+
+If starting from scratch, Vite 5 was used (not the latest) due to Node version compatibility:
+
+```bash
+npm create vite@5 client -- --template vue
+cd client
+npm install
+npm install vue-router@4 pinia axios
+```
+
+**2. Set the VITE_API_URL environment variable**
+
+Create a file called `client/.env` — this is listed in `.gitignore` and must never be committed.
+
+Use `client/.env.example` as your template: VITE_API_URL=http://localhost:3000
+
+**What this variable does:**
+
+| Variable | Purpose |
+|----------|---------|
+| `VITE_API_URL` | The base URL of the back-end API. Set to `http://localhost:3000` for local development, and your Railway URL for production. |
+
+All API calls in the Vue components reference this variable like so:
+```js
+axios.get(`${import.meta.env.VITE_API_URL}/api/dashboard`)
+```
+
+**3. Run the dev server**
+
+Make sure you are inside the `client/` folder:
+
+```bash
+npm run dev
+```
+
+You should see: ```VITE v5.x.x  ready in xxx ms ➜  Local:   http://localhost:5173/```
+
+**4. Verify the front-end connects to the back-end locally**
+
+1. Open a separate terminal and start the back-end from the project root:
+```bash
+npm run dev
+```
+You should see `Connected to MongoDB Atlas` and `Server running on port 3000`
+
+2. Open `http://localhost:5173` in your browser
+3. You should see the Login page
+4. Register a new account — if you are redirected to the dashboard and your habits load, the front-end is successfully connected to the back-end
+
+**Common issues:**
+- If you see `ERR_CONNECTION_REFUSED` in the browser console, the back-end is not running
+- If you see a MongoDB connection error in the terminal, your IP may not be whitelisted in Atlas Network Access — add `0.0.0.0/0` to allow access from anywhere
+
+**5. Project structure**
+```
+client/
+├── src/
+│   ├── components/
+│   │   └── CreateHabit.vue
+│   ├── router/
+│   │   └── index.js
+│   ├── stores/
+│   │   └── auth.js
+│   ├── views/
+│   │   ├── Login.vue
+│   │   ├── Register.vue
+│   │   ├── Dashboard.vue
+│   │   └── Leaderboard.vue
+│   ├── App.vue
+│   ├── main.js
+│   └── style.css
+├── .env
+├── .env.example
+└── package.json
+```
 
 ## Deployment
