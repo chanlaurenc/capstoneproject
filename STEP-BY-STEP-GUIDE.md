@@ -230,3 +230,117 @@ client/
 ```
 
 ## Deployment
+**Back-End Deployment (Railway)**
+
+**Prerequisites**
+- Railway account at [railway.app](https://railway.app) — sign up with GitHub
+- Back-end code pushed to GitHub
+
+**1. Create a new project**
+1. Click **New Project**
+2. Click **Deploy from GitHub repo**
+3. Select your `capstoneproject` repository
+4. Railway detects it as a Node.js project automatically
+
+**2. Set environment variables**
+1. Click on the service → **Variables** tab
+2. Add the following variables:
+
+| Variable | Value |
+|----------|-------|
+| `MONGODB_URI` | Your full MongoDB Atlas connection string |
+| `JWT_SECRET` | Your secret key |
+| `PORT` | `8080` |
+
+Railway manages the PORT internally — set it to 8080 to match what Railway expects.
+
+**3. Set the start command**
+1. Click **Settings** → scroll to **Deploy**
+2. Set the start command to:
+```bash
+node src/index.js
+```
+
+**4. Generate a public URL**
+1. Click **Settings** → scroll to **Networking**
+2. Click **Generate Domain**
+3. Your URL will look like: https://capstoneproject-production-xxxx.up.railway.app
+4. Open it in your browser — you should see:
+```json
+{"message": "Habit Streak Tracker API is running"}
+```
+
+**5. Update CORS**
+In `src/index.js`, update the CORS configuration to allow your GitHub Pages URL:
+```js
+app.use(cors({
+  origin: [
+    'http://localhost:5173',
+    'https://chanlaurenc.github.io'
+  ]
+}))
+```
+Push this change — Railway redeploys automatically on every push to main.
+
+### Front-End Deployment (GitHub Pages)
+
+**Prerequisites**
+- Back-end deployed to Railway and URL confirmed working
+- `gh-pages` package installed in `client/`
+
+**1. Install gh-pages**
+From inside the `client/` folder:
+```bash
+npm install gh-pages --save-dev
+```
+
+**2. Update `client/vite.config.js`**
+```js
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+
+export default defineConfig({
+  plugins: [vue()],
+  base: '/capstoneproject/'
+})
+```
+
+**3. Update `client/package.json`**
+Add these two scripts:
+```json
+"predeploy": "npm run build",
+"deploy": "gh-pages -d dist"
+```
+
+**4. Update `client/.env` to point to Railway**
+VITE_API_URL=https://capstoneproject-production-6fc9.up.railway.app
+
+**5. Update Vue Router to use hash history**
+In `src/router/index.js` change `createWebHistory` to `createWebHashHistory` — this is required because GitHub Pages does not support Vue Router's default history mode:
+```js
+import { createRouter, createWebHashHistory } from 'vue-router'
+
+const router = createRouter({
+  history: createWebHashHistory(),
+  routes
+})
+```
+
+**6. Deploy**
+From inside the `client/` folder:
+```bash
+npm run deploy
+```
+
+This builds the app and pushes the `dist/` folder to a `gh-pages` branch on GitHub.
+
+**7. Enable GitHub Pages**
+1. Go to your GitHub repo → **Settings** → **Pages**
+2. Under **Source** select **Deploy from a branch**
+3. Select **gh-pages** branch → **Save**
+4. Your live URL will be: https://chanlaurenc.github.io/capstoneproject/
+
+**Common issues:**
+- If the site is blank, make sure you are using `createWebHashHistory` in your router
+- If API calls fail on the live site, check that `client/.env` has the Railway URL and that CORS includes `https://chanlaurenc.github.io`
+- Railway redeploys automatically when you push to GitHub — no manual restart needed
